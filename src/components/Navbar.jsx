@@ -1,6 +1,6 @@
 import { NavLink} from "react-router-dom"
 import logo from "../assets/planes-manager-logo.png"
-import Search from "../pages/Search"
+import Searchbar from "./Searchbar.jsx"
  
 
 export default function Navbar() {
@@ -14,7 +14,7 @@ export default function Navbar() {
             </div>
 
             <div className="space-x-4 flex flex-grow justify-center text-center ml-37">
-            <NavLink className="font-yusei" to="/">
+            <NavLink to="/">
                 Home
             </NavLink>
             <NavLink to="/form">
@@ -26,7 +26,7 @@ export default function Navbar() {
             
             </div>
 
-            <Search/>
+            <Searchbar/>
         </div>
     
     </div>
