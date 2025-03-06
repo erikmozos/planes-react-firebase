@@ -1,32 +1,78 @@
 import { useEffect, useState } from "react";
 import { getPlanes } from "../data/firebase.js";
 
-export default function List() {
+export default function List({ onOpenModal }) {
     const [planes, setPlanes] = useState([]);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-      const unsubscribe = getPlanes(setPlanes);
-      return () => unsubscribe();
+      setLoading(true);
+      try {
+        const unsubscribe = getPlanes((data) => {
+          setPlanes(data);
+          setLoading(false);
+        });
+        return () => unsubscribe();
+      } catch (error) {
+        setError("Error al cargar los aviones");
+        setLoading(false);
+        console.error(error);
+      }
     }, []);
+  
+    if (error) {
+      return <div className="text-red-500 text-center p-4">{error}</div>;
+    }
+
+    if (loading) {
+      return (
+        <div className="flex justify-center items-center p-8">
+          <div className="animate-pulse text-lg font-medium">Cargando aviones...</div>
+        </div>
+      );
+    }
   
     return (
       <div className="container mx-auto p-4">
-        <h2 className="text-2xl font-bold mb-4">Lista de Aviones</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <h2 className="text-2xl font-bold mb-6 text-center">Lista de Aviones</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {planes.map((plane) => (
-            <div key={plane.id} className="max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+            <div 
+              key={plane.id} 
+              className="bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden dark:bg-gray-800 dark:border-gray-700"
+            >
+              <div className="h-48 bg-gray-200 dark:bg-gray-700 relative">
+                {plane.img ? (
+                  <img 
+                    src={plane.img} 
+                    alt={`${plane.model}`} 
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = "https://placehold.co/400x250?text=Sin+imagen";
+                    }}
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gray-200 dark:bg-gray-700">
+                    <p className="text-gray-500 dark:text-gray-400">Sin imagen disponible</p>
+                  </div>
+                )}
+              </div>
+              
               <div className="p-5">
-                <div>
-                  <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                    {plane.model}
-                  </h5>
-                </div>
+                <h5 className="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+                  {plane.model}
+                </h5>
                 <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                  Fabricante: {plane.producer}<br/>
-                  Capacidad: {plane.capacity} pasajeros<br/>
-                  Accidentes: {plane.accidents}
+                  <span className="font-medium">Fabricante:</span> {plane.producer}<br/>
+                  <span className="font-medium">Capacidad:</span> {plane.capacity} pasajeros<br/>
+                  <span className="font-medium">Accidentes:</span> {plane.accidents}
                 </p>
-                <button className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                <button 
+                  onClick={() => onOpenModal(plane.id)} 
+                  className="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 transition-colors duration-200 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                >
                   Ver detalles
                   <svg className="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
                     <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>

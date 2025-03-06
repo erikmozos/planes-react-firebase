@@ -1,27 +1,25 @@
-import Navbar from "./components/Navbar.jsx"
-import {BrowserRouter, Routes, Route } from "react-router-dom"
-import Form from "./pages/Form.jsx"
-import Search from "./pages/Search.jsx"
-import Home from "./pages/Home.jsx"
-import Topic from "./pages/Topic.jsx"
-
+import { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import Home from './pages/Home';
+import Form from './pages/Form';
 
 function App() {
+  const [searchTerm, setSearchTerm] = useState('');
 
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+  };
 
   return (
-    <div>
-    <BrowserRouter>
-    <Navbar/>
-    <Routes>
-            <Route path="/" element={<Home />}/>
-            <Route path="/form" element={<Form />}/>
-            <Route path="/topic" element={<Topic />}/>
-            <Route path="/search" element={<Search />}/>
-        </Routes>
-        </BrowserRouter>
-    </div>
-  )
+    <Router>
+      <Navbar onSearch={handleSearch} />
+      <Routes>
+        <Route path="/" element={<Home searchTerm={searchTerm} />} />
+        <Route path="/form" element={<Form />} />
+      </Routes>
+    </Router>
+  );
 }
 
 export default App;

@@ -1,34 +1,41 @@
-import { NavLink} from "react-router-dom"
+import { NavLink } from "react-router-dom"
 import logo from "../assets/planes-manager-logo.png"
-import Searchbar from "./Searchbar.jsx"
- 
 
 export default function Navbar() {
   return (
-    <div>
-
-        <div className="bg-[#101218] text-white h-[4.2em] flex items-center space-x-4 justify-between p-4 ">
-
-            <div className="w-max">
-                <img src={logo} alt="" className="z-40 w-20" />
+    <nav className="bg-[#101218] shadow-lg">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          <div className="flex-shrink-0">
+            <img src={logo} alt="Planes Manager Logo" className="w-24 h-auto" />
+          </div>
+          
+          <div className="hidden md:block">
+            <div className="ml-10 flex items-center space-x-6">
+              <NavLink 
+                to="/" 
+                className={({ isActive }) => 
+                  isActive 
+                    ? "text-white bg-[#1a1d27] px-4 py-2 rounded-md text-sm font-medium"
+                    : "text-gray-300 hover:text-white hover:bg-[#1a1d27] px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+                }
+              >
+                Inicio
+              </NavLink>
+              <NavLink 
+                to="/form" 
+                className={({ isActive }) => 
+                  isActive 
+                    ? "text-white bg-[#1a1d27] px-4 py-2 rounded-md text-sm font-medium"
+                    : "text-gray-300 hover:text-white hover:bg-[#1a1d27] px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+                }
+              >
+                Añadir Avión
+              </NavLink>
             </div>
-
-            <div className="space-x-4 flex flex-grow justify-center text-center ml-37">
-            <NavLink to="/">
-                Home
-            </NavLink>
-            <NavLink to="/form">
-                Form
-            </NavLink>
-            <NavLink to="/topic">
-                Topic
-            </NavLink>
-            
-            </div>
-
-            <Searchbar/>
+          </div>
         </div>
-    
-    </div>
+      </div>
+    </nav>
   )
 }
